@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 
 // @desc Get all wallets for a user
-// @route GET /users/wallets
+// @route POST /users/wallets/get
 // @access Private
 const getAllWallets = asyncHandler(async (req, res) => {
   const { userId, username } = req.body;

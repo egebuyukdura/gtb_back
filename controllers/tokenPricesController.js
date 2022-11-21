@@ -20,7 +20,7 @@ const baseTokens = tokenVars.baseTokens;
 let tokenAddress, buyAmount, sellAmount, buyOutput, sellOutput;
 
 // @desc Get buy price for a token
-// @route GET /token/prices/buy
+// @route POST /token/prices/buy
 // @access Private
 const getTokenBuyPrice = asyncHandler(async (req, res) => {
   const { tAddress, tDecimals, tPair, buyInput } = req.body;

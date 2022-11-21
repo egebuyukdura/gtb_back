@@ -11,6 +11,8 @@ const connectDB = require("./config/dbConnection");
 const mongoose = require("mongoose");
 const PORT = process.env.PORT || 3500;
 
+app.use(require("express-status-monitor")());
+
 connectDB();
 
 app.use(logger);

@@ -17,23 +17,26 @@ router
 
 router
   .route("/wallets")
-  .get(walletsController.getAllWallets)
   .post(walletsController.createWallet)
   .patch(walletsController.updateWallet)
   .delete(walletsController.deleteWallet);
 
+router.route("/wallets/get").post(walletsController.getAllWallets);
+
 router
   .route("/activeOrders")
-  .get(activeOrdersController.getActiveOrders)
   .post(activeOrdersController.createActiveOrder)
   .patch(activeOrdersController.updateActiveOrder)
   .delete(activeOrdersController.deleteActiveOrder);
 
+router.route("/activeOrders/get").post(activeOrdersController.getActiveOrders);
+
 router
   .route("/pastOrders")
-  .get(pastOrdersController.getPastOrders)
   .post(pastOrdersController.createPastOrder)
   .patch(pastOrdersController.updatePastOrder)
   .delete(pastOrdersController.deletePastOrder);
+
+router.route("/pastOrders/get").post(pastOrdersController.getPastOrders);
 
 module.exports = router;

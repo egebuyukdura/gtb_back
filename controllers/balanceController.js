@@ -9,7 +9,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 let bnbBalanceBN, bnbBalance, walletAddress;
 
 // @desc Get wallet balance
-// @route GET /balance
+// @route POST /balance
 // @access Private
 const getBalance = asyncHandler(async (req, res) => {
   const { wAddress } = req.body;

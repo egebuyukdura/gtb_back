@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const asyncHandler = require("express-async-handler");
 
 // @desc Get all past orders for a user
-// @route GET /users/pastOrders
+// @route POST /users/pastOrders/get
 // @access Private
 const getPastOrders = asyncHandler(async (req, res) => {
   const { userId, username } = req.body;

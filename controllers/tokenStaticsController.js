@@ -16,7 +16,7 @@ let tokenAddress,
   tokenStatics;
 
 // @desc Get static data for a token
-// @route GET /token/statics
+// @route POST /token/statics
 // @access Private
 const getTokenStatics = asyncHandler(async (req, res) => {
   const { tAddress } = req.body;
@@ -42,15 +42,10 @@ const getTokenStatics = asyncHandler(async (req, res) => {
     tokenDecimals = await tokenContract.decimals();
     tokenName = await tokenContract.name();
     tokenSymbol = await tokenContract.symbol();
-    tokenSupply = await tokenContract.totalSupply();
-    tokenSupply = ethers.utils.formatUnits(tokenSupply, tokenDecimals);
-    let tempSupply = tokenSupply.split(".");
-    tokenSupply = tempSupply[0];
 
     tokenStatics = {
       tokenName: tokenName,
       tokenSymbol: tokenSymbol,
-      tokenSupply: tokenSupply.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1."),
       tokenDecimals: tokenDecimals.toString(),
     };
 

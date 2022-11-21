@@ -24,6 +24,7 @@ const baseTokens = tokenVars.baseTokens;
 let tokenAddress,
   walletAddress,
   tokenContract,
+  tokenSupply,
   tokenBalance,
   tokenPair,
   tokenLiq,
@@ -40,7 +41,7 @@ let tokenPairs = [
 let reserves = [[], [], []];
 
 // @desc Get dynamic data for a token
-// @route GET /token/dynamics
+// @route POST /token/dynamics
 // @access Private
 const getTokenDynamics = asyncHandler(async (req, res) => {
   tokenPairs = [
@@ -49,10 +50,10 @@ const getTokenDynamics = asyncHandler(async (req, res) => {
     { type: baseTokens[2], pair: "" },
   ];
   reserves = [[], [], []];
-  const { tAddress, wAddress, tDecimals, tSupply, bnbPrice } = req.body;
+  const { tAddress, wAddress, tDecimals, bnbPrice } = req.body;
 
   // Confirm received data
-  if (!tAddress || !wAddress || !tDecimals || !tSupply || !bnbPrice) {
+  if (!tAddress || !wAddress || !tDecimals || !bnbPrice) {
     return res.status(400).json({ message: "All fields are required." });
   }
 
@@ -78,10 +79,20 @@ const getTokenDynamics = asyncHandler(async (req, res) => {
 
   try {
     // Get token dynamic data
+    let tokenDeadSupply;
     tokenContract = new ethers.Contract(tokenAddress, tokenABI, provider);
     tokenBalance = await tokenContract.balanceOf(walletAddress);
     tokenBalance = ethers.utils.formatUnits(tokenBalance, tDecimals);
-
+    tokenSupply = await tokenContract.totalSupply();
+    tokenSupply = ethers.utils.formatUnits(tokenSupply, tDecimals);
+    tokenDeadSupply = await tokenContract.balanceOf(
+      "0x000000000000000000000000000000000000dead"
+    );
+    tokenDeadSupply = ethers.utils.formatUnits(tokenDeadSupply, tDecimals);
+    tokenDeadSupply =
+      tokenDeadSupply === "0.0"
+        ? tokenSupply.split(".")[0]
+        : (tokenSupply - tokenDeadSupply).toString();
     // Get token approval status for wallet
     let tempApprove = await tokenContract.allowance(
       walletAddress,
@@ -138,7 +149,7 @@ const getTokenDynamics = asyncHandler(async (req, res) => {
             tokenLiq = Number(tokenLiq).toFixed(2);
             tokenDollarLiq = threeDots(tokenLiq * bnbPrice);
             tokenPrice = (reserves[0][0] / reserves[0][1]) * bnbPrice;
-            tokenMCap = threeDots(tokenPrice * tSupply);
+            tokenMCap = threeDots(tokenPrice * tokenDeadSupply);
             tokenPrice = sixDecimals(tokenPrice);
             break;
           case 1:
@@ -147,7 +158,7 @@ const getTokenDynamics = asyncHandler(async (req, res) => {
             tokenLiq = Number(tokenLiq).toFixed(2);
             tokenDollarLiq = threeDots(tokenLiq);
             tokenPrice = reserves[1][0] / reserves[1][1];
-            tokenMCap = threeDots(tokenPrice * tSupply);
+            tokenMCap = threeDots(tokenPrice * tokenDeadSupply);
             tokenPrice = sixDecimals(tokenPrice);
             break;
           case 2:
@@ -156,7 +167,7 @@ const getTokenDynamics = asyncHandler(async (req, res) => {
             tokenLiq = Number(tokenLiq).toFixed(2);
             tokenDollarLiq = threeDots(tokenLiq);
             tokenPrice = reserves[2][0] / reserves[2][1];
-            tokenMCap = threeDots(tokenPrice * tSupply);
+            tokenMCap = threeDots(tokenPrice * tokenDeadSupply);
             tokenPrice = sixDecimals(tokenPrice);
             break;
           default:
@@ -168,6 +179,7 @@ const getTokenDynamics = asyncHandler(async (req, res) => {
     i = 0;
 
     tokenDynamics = {
+      tokenSupply: tokenSupply.split(".")[0],
       tokenBalance: tokenBalance,
       tokenPair: tokenPair,
       tokenLiq: tokenLiq,

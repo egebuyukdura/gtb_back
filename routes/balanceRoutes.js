@@ -5,6 +5,6 @@ const verifyJWT = require("../middleware/verifyJWT");
 
 router.use(verifyJWT);
 
-router.route("/").get(balanceController.getBalance);
+router.route("/").post(balanceController.getBalance);
 
 module.exports = router;

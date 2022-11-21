@@ -7,9 +7,9 @@ const verifyJWT = require("../middleware/verifyJWT");
 
 router.use(verifyJWT);
 
-router.route("/statics").get(tokenStaticsController.getTokenStatics);
-router.route("/dynamics").get(tokenDynamicsController.getTokenDynamics);
-router.route("/prices/buy").get(tokenPricesController.getTokenBuyPrice);
-router.route("/prices/sell").get(tokenPricesController.getTokenSellPrice);
+router.route("/statics").post(tokenStaticsController.getTokenStatics);
+router.route("/dynamics").post(tokenDynamicsController.getTokenDynamics);
+router.route("/prices/buy").post(tokenPricesController.getTokenBuyPrice);
+router.route("/prices/sell").post(tokenPricesController.getTokenSellPrice);
 
 module.exports = router;
