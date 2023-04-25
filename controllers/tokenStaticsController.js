@@ -39,9 +39,12 @@ const getTokenStatics = asyncHandler(async (req, res) => {
   try {
     // Get token static data
     tokenContract = new ethers.Contract(tokenAddress, tokenABI, provider);
-    tokenDecimals = await tokenContract.decimals();
-    tokenName = await tokenContract.name();
-    tokenSymbol = await tokenContract.symbol();
+
+    [tokenDecimals, tokenName, tokenSymbol] = await Promise.all([
+      tokenContract.decimals(),
+      tokenContract.name(),
+      tokenContract.symbol(),
+    ]);
 
     tokenStatics = {
       tokenName: tokenName,
